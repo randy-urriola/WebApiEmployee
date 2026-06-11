@@ -21,6 +21,15 @@ builder.Services.AddDbContext<AppDbContext>(op =>
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<PositionService>();
 
+// Para evitar errores de conflicto con los puertos entre la app y Angular
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("NewPolicy", app =>
+    {
+        app.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,6 +37,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseCors("NewPolicy");
 
 app.UseAuthorization();
 
